@@ -14,6 +14,7 @@ local aes_crypto_iv = "a1b2c3d4e5f6g7h8"
 if subsystem == 'stream' then
     ffi.cdef[[
         void ngx_stream_lua_remove_bytes(ngx_stream_lua_request_t *r, int length, int flag);
+		void ngx_stream_lua_add_custom_message(ngx_stream_lua_request_t *r, const unsigned char *custom_msg, size_t custom_msg_len, int flag);
         char* AESCBCDecrypt(const char* ciphertext, const char* key, const char* iv, char* errMsg, int errMsgLen);
         void FreeCString(char* str);
     ]]
@@ -85,7 +86,7 @@ local ParseJsonData = function(proxydata)
     ngx.log(ngx.INFO, "UseIp: ", ngx.ctx.dbip, ", Port: ", ngx.ctx.dbport, " connect dst resource")
 end
 
-function _M.Work(bDecryptData)
+function _M.Work(bDecryptData, bAddCustomMessage)
     local sock,err = ngx.req.socket(true)
     if not sock then
         ngx.log(ngx.ERR, "failed to create socket: ", err)
@@ -128,6 +129,12 @@ function _M.Work(bDecryptData)
     end
 
 	C.ngx_stream_lua_remove_bytes(r, 7+datalen, 0)
+
+	if bAddCustomMessage == true then
+		local jsondata = {name = "zhangsan", age = 100}
+		local json_str = cjson.encode(jsondata)
+		C.ngx_stream_lua_add_custom_message(r, json_str, #json_str, 1)
+	end
 end
 
 return _M
