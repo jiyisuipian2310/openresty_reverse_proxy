@@ -1,0 +1,2 @@
+# openresty_reverse_proxy
+在stream模块中preread阶段读取自定义的代理数据，获取其中的目标ip和端口，然后通过ngx.balancer模块中的set_current_peer方法和后端建立连接
