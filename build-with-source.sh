@@ -28,3 +28,5 @@ cd $CURR_PATH
 cp -r config/mylua /usr/local/openresty/nginx/
 cp config/nginx.conf /usr/local/openresty/nginx/conf/
 cp config/lib/libgocommonlib.so /usr/local/openresty/lualib/
+
+tar -zxvf config/kafka.tar.gz -C /usr/local/openresty/lualib/resty

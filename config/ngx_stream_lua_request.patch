@@ -3,7 +3,7 @@
 > void ngx_stream_lua_remove_bytes(ngx_stream_lua_request_t *r, int length, int flag)
 > {
 >     ngx_connection_t *c = r->connection;
->     if(c->buffer == NULL || c->buffer->pos >= c->buffer->last) {
+>     if(c->buffer == NULL || c->buffer->pos > c->buffer->last) {
 >         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_stream_lua_remove_bytes, c->buffer == NULL or c->buffer->pos >= c->buffer->last");
 >         return;
 >     }
@@ -20,7 +20,7 @@
 > void ngx_stream_lua_add_custom_message(ngx_stream_lua_request_t *r, const unsigned char *custom_msg, size_t custom_msg_len, int flag)
 > {
 >     ngx_connection_t *c = r->connection;
->     if (c->buffer == NULL || c->buffer->pos >= c->buffer->last) {
+>     if (c->buffer == NULL || c->buffer->pos > c->buffer->last) {
 >         ngx_log_error(NGX_LOG_ERR, r->connection->log, 0, "ngx_stream_lua_add_custom_message, c->buffer == NULL or c->buffer->pos >= c->buffer->last");
 >         return;
 >     }

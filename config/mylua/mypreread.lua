@@ -23,6 +23,19 @@ end
 local _M = {
 }
 
+local timerFunc = function(premature, arg)
+    local producer = require "resty.kafka.producer"
+    local broker_list = {
+        { host = "192.168.2.151", port = "9093" },
+    }
+
+    local bp = producer:new(broker_list)
+    local ok, err = bp:send("test1", nil, arg)
+    if not ok then
+        ngx.log(ngx.INFO, "failed to send message: ", err, ", message", arg)
+    end
+end
+
 -- AES解密函数
 local aes_decrypt = function(input)
     local err_msg_len = 256
@@ -84,6 +97,17 @@ local ParseJsonData = function(proxydata)
 
     ngx.ctx.dbport = dstport
     ngx.log(ngx.INFO, "UseIp: ", ngx.ctx.dbip, ", Port: ", ngx.ctx.dbport, " connect dst resource")
+
+    local t = {
+        time = ngx.localtime(),
+        clientip = ngx.var.remote_addr,
+        proxyip = ngx.var.server_addr,
+        proxyport = ngx.var.server_port,
+        dstip = ngx.ctx.dbip,
+        dstport = ngx.ctx.dbport
+    }
+    local message = cjson.encode(t)
+    ngx.timer.at(0, timerFunc, message)
 end
 
 function _M.Work(bDecryptData, bAddCustomMessage)

@@ -36,3 +36,5 @@ cp config/nginx.conf /usr/local/openresty/nginx/conf/
 cp config/lib/libgocommonlib.so /usr/local/openresty/lualib/
 cp config/lib/libcrypto.so.3 /usr/local/openresty/luajit/lib/
 cp config/lib/libssl.so.3 /usr/local/openresty/luajit/lib/
+
+tar -zxvf config/kafka.tar.gz -C /usr/local/openresty/lualib/resty
